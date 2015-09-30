@@ -1,0 +1,21 @@
+<!DOCTYPE html>
+<html ng-app="example.app">
+<head lang="en">
+  <meta charset="UTF-8">
+  <title>Example ui-router test app</title>
+</head>
+<body>
+
+<script src="bower_components/angular/angular.js"></script>
+<script src="bower_components/angular-ui-router/release/angular-ui-router.js"></script>
+
+<script src="js/routing.js"></script>
+<script src="js/app.js"></script>
+
+<div ui-view></div>
+
+<a ui-sref="home">Home</a>
+<a ui-sref="home.about">About</a>
+
+</body>
+</html>
