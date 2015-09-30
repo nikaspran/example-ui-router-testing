@@ -2,8 +2,6 @@
 
 ## Running it
 
-> `npm install`
-
-> `bower install`
-
-> `npm test`
+* `npm install`
+* `bower install`
+* `npm test`
