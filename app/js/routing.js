@@ -9,6 +9,7 @@
           $injector.get('$state').go('404', {}, {location: false});
         });
 
+      var modalInstance;
       $stateProvider
         .state('home', {
           url: '/home',
@@ -21,7 +22,19 @@
         .state('404', {
           templateUrl: 'views/404.html'
         })
+        .state('modal', {
+          url: '/modalState',
+          template: 'Pretend this is a modal...',
+          onEnter: function (modal) {
+            modalInstance = modal.open();
+          },
+          onExit: function () {
+            modalInstance.close();
+          }
+        })
         .state('stateWithoutViews', {
+          url: '/stateWithoutViews',
+          template: 'State Without Views, model: {{model}}',
           controller: function ($scope, someModel) {
             $scope.model = someModel;
           },
@@ -36,6 +49,7 @@
           url: '/stateWithViews',
           views: {
             'main@layout': {
+              template: 'State With Views, model: {{model}}',
               controller: function ($scope, otherModel) {
                 $scope.model = otherModel;
               },
