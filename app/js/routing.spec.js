@@ -41,7 +41,7 @@ describe('example.routing', function () {
         mockTemplate('views/home.html');
       });
 
-      it('should go to the hxome state', function () {
+      it('should go to the home state', function () {
         goTo('');
         expect($state.current.name).toEqual('home');
       });

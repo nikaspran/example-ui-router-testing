@@ -1,6 +1,7 @@
 'use strict';
 module.exports = function (grunt) {
   grunt.loadNpmTasks('grunt-contrib-jasmine');
+  grunt.loadNpmTasks('grunt-contrib-connect');
 
   grunt.initConfig({
     pkg: grunt.file.readJSON('package.json'),
@@ -14,9 +15,19 @@ module.exports = function (grunt) {
         ],
         specs: 'app/js/**/*.spec.js'
       }
+    },
+    connect: {
+      server: {
+        options: {
+          base: 'app',
+          open: true,
+          useAvailablePort: true
+        }
+      }
     }
   });
 
   grunt.registerTask('test', ['jasmine']);
+  grunt.registerTask('serve', ['connect:server', 'connect:server:keepalive']);
   grunt.registerTask('default', ['test']);
 };
