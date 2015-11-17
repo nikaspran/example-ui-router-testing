@@ -1,6 +1,6 @@
 'use strict';
 describe('example.routing', function () {
-  var $state, $q, $templateCache, $location, $rootScope, $injector, mockSomeRepository, mockOtherRepository, mockModal;
+  var $state, $stateParams, $q, $templateCache, $location, $rootScope, $injector, mockSomeRepository, mockOtherRepository, mockModal;
 
   function mockTemplate(templateRoute, tmpl) {
     $templateCache.put(templateRoute, tmpl || templateRoute);
@@ -21,8 +21,9 @@ describe('example.routing', function () {
     $provide.value('otherRepository', mockOtherRepository = {getModel: jasmine.createSpy('getModel')});
     $provide.value('modal', mockModal = {open: jasmine.createSpy('modalOpen')});
   }));
-  beforeEach(inject(function (_$state_, _$q_, _$templateCache_, _$location_, _$rootScope_, _$injector_) {
+  beforeEach(inject(function (_$state_, _$stateParams_, _$q_, _$templateCache_, _$location_, _$rootScope_, _$injector_) {
     $state = _$state_;
+    $stateParams = _$stateParams_;
     $q = _$q_;
     $templateCache = _$templateCache_;
     $location = _$location_;
@@ -66,6 +67,17 @@ describe('example.routing', function () {
       it('should go to the home state', function () {
         goTo('/home');
         expect($state.current.name).toEqual('home');
+      });
+    });
+
+    describe('/users/:someParam', function(){
+      it('should go to the stateWithUrlParams state', function () {
+        goTo('/users/123');
+        expect($state.current.name).toEqual('stateWithUrlParams');
+      });
+      it('should have $stateParams.someParam', function () {
+        goTo('/users/321');
+        expect($stateParams.someParam).toEqual('321');
       });
     });
 

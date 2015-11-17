@@ -19,6 +19,13 @@
           abstract: true,
           template: '<div ui-view="main"></div>'
         })
+        .state('stateWithUrlParams', {
+          url: '/users/:someParam',
+          template: 'State with a url parameter: {{someParam}}',
+          controller: function($scope, $stateParams) {
+            $scope.someParam = $stateParams.someParam
+          }
+        })
         .state('404', {
           templateUrl: 'views/404.html'
         })
