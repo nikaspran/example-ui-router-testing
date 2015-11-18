@@ -23,7 +23,7 @@
           url: '/users/:someParam',
           template: 'State with a url parameter: {{someParam}}',
           controller: function($scope, $stateParams) {
-            $scope.someParam = $stateParams.someParam
+            $scope.someParam = $stateParams.someParam;
           }
         })
         .state('404', {

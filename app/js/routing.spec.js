@@ -1,6 +1,6 @@
 'use strict';
 describe('example.routing', function () {
-  var $state, $stateParams, $q, $templateCache, $location, $rootScope, $injector, mockSomeRepository, mockOtherRepository, mockModal;
+  var mockSomeRepository, mockOtherRepository, mockModal;
 
   function mockTemplate(templateRoute, tmpl) {
     $templateCache.put(templateRoute, tmpl || templateRoute);
@@ -21,15 +21,10 @@ describe('example.routing', function () {
     $provide.value('otherRepository', mockOtherRepository = {getModel: jasmine.createSpy('getModel')});
     $provide.value('modal', mockModal = {open: jasmine.createSpy('modalOpen')});
   }));
-  beforeEach(inject(function (_$state_, _$stateParams_, _$q_, _$templateCache_, _$location_, _$rootScope_, _$injector_) {
-    $state = _$state_;
-    $stateParams = _$stateParams_;
-    $q = _$q_;
-    $templateCache = _$templateCache_;
-    $location = _$location_;
-    $rootScope = _$rootScope_;
-    $injector = _$injector_;
-  }));
+
+  beforeEach(function () {
+    bard.inject('$state', '$stateParams', '$q', '$templateCache', '$location', '$rootScope', '$injector');
+  });
 
   describe('path', function () {
     function goTo(url) {
