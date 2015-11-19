@@ -4,14 +4,14 @@
     .service('someRepository', function () {
       this.getModel = function () {
         return ['some item 1', 'some item 2'];
-      }
+      };
     })
     .service('otherRepository', function ($timeout) {
       this.getModel = function () {
         return $timeout(function () {
           return ['other item 1', 'other item 2'];
         }, 1000);
-      }
+      };
     })
     .service('modal', function () {
       this.open = function () {
@@ -20,5 +20,5 @@
       this.close = function () {
         console.log('Modal closing...');
       };
-    })
+    });
 }());

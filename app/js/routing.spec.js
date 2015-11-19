@@ -1,6 +1,7 @@
+/* jshint -W117, -W030 */
 'use strict';
 describe('example.routing', function () {
-  var $state, $stateParams, $q, $templateCache, $location, $rootScope, $injector, mockSomeRepository, mockOtherRepository, mockModal;
+  var mockSomeGetModel, mockOtherGetModel, mockModalOpen;
 
   function mockTemplate(templateRoute, tmpl) {
     $templateCache.put(templateRoute, tmpl || templateRoute);
@@ -16,20 +17,17 @@ describe('example.routing', function () {
     };
   }
 
-  beforeEach(module('example.routing', function ($provide) {
-    $provide.value('someRepository', mockSomeRepository = {getModel: jasmine.createSpy('getModel')});
-    $provide.value('otherRepository', mockOtherRepository = {getModel: jasmine.createSpy('getModel')});
-    $provide.value('modal', mockModal = {open: jasmine.createSpy('modalOpen')});
-  }));
-  beforeEach(inject(function (_$state_, _$stateParams_, _$q_, _$templateCache_, _$location_, _$rootScope_, _$injector_) {
-    $state = _$state_;
-    $stateParams = _$stateParams_;
-    $q = _$q_;
-    $templateCache = _$templateCache_;
-    $location = _$location_;
-    $rootScope = _$rootScope_;
-    $injector = _$injector_;
-  }));
+  beforeEach(module('example.routing', 'example.app'));
+
+  beforeEach(function () {
+    bard.inject(
+      '$state', '$stateParams', '$q', '$templateCache', '$location',
+      '$rootScope', '$injector', 'someRepository', 'otherRepository', 'modal'
+    );
+    mockSomeGetModel = sinon.stub(someRepository, 'getModel');
+    mockOtherGetModel = sinon.stub(otherRepository, 'getModel');
+    mockModalOpen = sinon.stub(modal, 'open');
+  });
 
   describe('path', function () {
     function goTo(url) {
@@ -115,10 +113,8 @@ describe('example.routing', function () {
 
     describe('stateWithoutViews', function () {
       it('should resolve someModel', function () {
-        var onResolved = jasmine.createSpy('resolve'); // just a spy of any sort
-        mockSomeRepository.getModel = function () { // just a mock for the service
-          return $q.when('something');
-        };
+        var onResolved = sinon.spy(resolve); // just a spy of any sort
+        mockSomeGetModel.returns($q.when('something')); // just a mock for the service
 
         resolve('someModel').forStateAndView('stateWithoutViews').then(onResolved);
         $rootScope.$digest();
@@ -128,10 +124,8 @@ describe('example.routing', function () {
 
     describe('stateWithViews', function () {
       it('should resolve otherModel', function () {
-        var onResolved = jasmine.createSpy('resolve'); // just a spy of any sort
-        mockOtherRepository.getModel = function () { // just a mock for the service
-          return $q.when('other');
-        };
+        var onResolved = sinon.spy(resolve); // just a spy of any sort
+        mockOtherGetModel.returns($q.when('other')); // just a mock for the service
 
         resolve('otherModel').forStateAndView('stateWithViews', 'main@layout').then(onResolved);
         $rootScope.$digest();
@@ -143,17 +137,15 @@ describe('example.routing', function () {
   describe('onEnter', function () {
     it('should open a modal', function () {
       goFrom('/modalState').toState('modal');
-      expect(mockModal.open).toHaveBeenCalled();
+      expect(mockModalOpen).toHaveBeenCalled();
     });
   });
 
   describe('onExit', function () {
     it('should close the modal', function () {
       mockTemplate('views/home.html');
-      var modal = {close: jasmine.createSpy('modalClose')};
-      mockModal.open = function () {
-        return modal;
-      };
+      var modal = {close: sinon.spy()};
+      mockModalOpen.returns(modal);
       goFrom('/modalState').toState('modal');
       goFrom('/home').toState('home');
       expect(modal.close).toHaveBeenCalled();
