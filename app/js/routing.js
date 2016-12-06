@@ -22,7 +22,7 @@
         .state('stateWithUrlParams', {
           url: '/users/:someParam',
           template: 'State with a url parameter: {{someParam}}',
-          controller: function($scope, $stateParams) {
+          controller: function ($scope, $stateParams) {
             $scope.someParam = $stateParams.someParam
           }
         })
@@ -37,6 +37,22 @@
           },
           onExit: function () {
             modalInstance.close();
+          }
+        })
+        .state('onEnterWithResolveDependency', {
+          url: '/resolveDependency',
+          template: 'Resolved onEnter dependency',
+          resolve: {
+            resolveDep: function ($q) {
+              return $q.when({
+                performAction: function () {
+                  alert('action performed from resolveDep');
+                }
+              });
+            }
+          },
+          onEnter: function (resolveDep) {
+            resolveDep.performAction();
           }
         })
         .state('stateWithoutViews', {

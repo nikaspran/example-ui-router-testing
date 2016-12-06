@@ -16,6 +16,21 @@ describe('example.routing', function () {
     };
   }
 
+  function getViewDefinition(state, view) {
+    return view ? $state.get(state).views[view] : $state.get(state);
+  }
+
+  function mockResolve(name, mock) {
+    return {
+      forStateAndView: function (state, view) {
+        var viewDefinition = getViewDefinition(state, view);
+        viewDefinition.resolve[name] = function () {
+          return mock;
+        }
+      }
+    };
+  }
+
   beforeEach(module('example.routing', function ($provide) {
     $provide.value('someRepository', mockSomeRepository = {getModel: jasmine.createSpy('getModel')});
     $provide.value('otherRepository', mockOtherRepository = {getModel: jasmine.createSpy('getModel')});
@@ -70,7 +85,7 @@ describe('example.routing', function () {
       });
     });
 
-    describe('/users/:someParam', function(){
+    describe('/users/:someParam', function () {
       it('should go to the stateWithUrlParams state', function () {
         goTo('/users/123');
         expect($state.current.name).toEqual('stateWithUrlParams');
@@ -103,7 +118,7 @@ describe('example.routing', function () {
     function resolve(value) {
       return {
         forStateAndView: function (state, view) {
-          var viewDefinition = view ? $state.get(state).views[view] : $state.get(state);
+          var viewDefinition = getViewDefinition(state, view);
           return $injector.invoke(viewDefinition.resolve[value]);
         }
       };
@@ -144,6 +159,13 @@ describe('example.routing', function () {
     it('should open a modal', function () {
       goFrom('/modalState').toState('modal');
       expect(mockModal.open).toHaveBeenCalled();
+    });
+
+    it('should have mockable resolve dependencies', function () {
+      var mockResolveDep = {performAction: jasmine.createSpy('performAction')};
+      mockResolve('resolveDep', mockResolveDep).forStateAndView('onEnterWithResolveDependency');
+      goFrom('/resolveDependency').toState('onEnterWithResolveDependency');
+      expect(mockResolveDep.performAction).toHaveBeenCalled();
     });
   });
 
